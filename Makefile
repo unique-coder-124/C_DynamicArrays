@@ -1,5 +1,5 @@
 ifeq ($(OS),Windows_NT)
-  RM = del /Q /F
+  RM = del
   MKDIR = if not exist "$(BUILDDIR)" mkdir "$(BUILDDIR)"
 else
   RM = rm -f
