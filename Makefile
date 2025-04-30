@@ -1,7 +1,9 @@
 ifeq ($(OS),Windows_NT)
-  RM = del
+  RM = del /Q /F
+  MKDIR = if not exist "$(BUILDDIR)" mkdir "$(BUILDDIR)"
 else
   RM = rm -f
+  MKDIR = mkdir -p $(BUILDDIR)
 endif
 
 CC = clang
@@ -13,13 +15,18 @@ OBJ = main.o
 SRC = main.c
 HEADER = DynamicArrays.h
 
-all: $(EXE)
+BUILDDIR = build/
+OBJFILE = $(BUILDDIR)$(OBJ)
+EXEFILE = $(BUILDDIR)$(EXE)
 
-$(EXE): $(OBJ)
-	$(CC) $(OBJ) -o $(EXE)
+all: $(EXEFILE)
 
-$(OBJ): $(SRC) $(HEADER)
-	$(CC) $(CFLAGS) -c $(SRC) -o $(OBJ)
+$(EXEFILE): $(OBJFILE)
+	$(CC) $(OBJFILE) -o $(EXEFILE)
+
+$(OBJFILE): $(SRC) $(HEADER)
+	$(MKDIR)
+	$(CC) $(CFLAGS) -c $(SRC) -o $(OBJFILE)
 
 clean:
-	$(RM) $(OBJ) $(EXE)
+	$(RM) $(BUILDDIR)*.o $(BUILDDIR)*.exe
