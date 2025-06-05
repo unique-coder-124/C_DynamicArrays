@@ -1,0 +1,7 @@
+build/
+dist/
+nob
+nob.exe
+nob.exe.old
+nob.old
+.clangd
