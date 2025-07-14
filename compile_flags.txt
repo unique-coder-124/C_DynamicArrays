@@ -1,0 +1,6 @@
+-x
+c
+--target=x86_64-w64-windows-gnu
+-isystem
+C:/Users/Michael_dev/scoop/apps/mingw-winlibs-llvm-msvcrt/14.2.0-19.1.7-12.0.0-r3/x86_64-w64-mingw32/include
+
