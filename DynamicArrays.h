@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-#ifndef DYNAMIC_ARRAY_H
-#define DYNAMIC_ARRAY_H
+#ifndef DYNAMIC__DA_ARRAY_H
+#define DYNAMIC__DA_ARRAY_H
 
 #if defined(__clang__)
   #define DIAGNOSTIC_PUSH    _Pragma("clang diagnostic push")
@@ -28,78 +28,146 @@
     size_t capacity;      \
   }
 
-#define DA_Append(_ARR, _VAL) ({                                              \
-  DIAGNOSTIC_PUSH                                                             \
-  DIAGNOSTIC_IGNORE_UNUSED                                                    \
-  int _RESULT = 1;                                                            \
-  if (_ARR.count >= _ARR.capacity) {                                          \
-    if (_ARR.capacity == 0) {                                                 \
-      _ARR.capacity = 128;                                                    \
-    } else {                                                                  \
-      _ARR.capacity *= 2;                                                     \
-    }                                                                         \
-    void* _OLDPTR = _ARR.items;                                               \
-    _ARR.items = realloc(_ARR.items, _ARR.capacity*sizeof(*_ARR.items));      \
-    if (!_ARR.items) {                                                        \
-      _RESULT = 0;                                                            \
-      _ARR.items = _OLDPTR;                                                   \
-    } else {                                                                  \
-      _ARR.items[_ARR.count++] = _VAL;                                        \
-    }                                                                         \
-  } else {                                                                    \
-    _ARR.items[_ARR.count++] = _VAL;                                          \
-  }                                                                           \
-  _RESULT;                                                                    \
-  DIAGNOSTIC_POP                                                              \
+#define DA_Append(__DA_ARR, __DA_VAL) ({                                                              \
+  DIAGNOSTIC_PUSH                                                                                     \
+  DIAGNOSTIC_IGNORE_UNUSED                                                                            \
+  int __DA_RESULT = 1;                                                                                \
+  if ((__DA_ARR).count >= (__DA_ARR).capacity) {                                                      \
+    if ((__DA_ARR).capacity == 0) {                                                                   \
+      (__DA_ARR).capacity = 128;                                                                      \
+    } else {                                                                                          \
+      (__DA_ARR).capacity *= 2;                                                                       \
+    }                                                                                                 \
+    void* __DA_OLDPTR = (__DA_ARR).items;                                                             \
+    (__DA_ARR).items = realloc((__DA_ARR).items, (__DA_ARR).capacity*sizeof(*(__DA_ARR).items));      \
+    if (!(__DA_ARR).items) {                                                                          \
+      __DA_RESULT = 0;                                                                                \
+      (__DA_ARR).items = __DA_OLDPTR;                                                                 \
+    } else {                                                                                          \
+      (__DA_ARR).items[(__DA_ARR).count++] = __DA_VAL;                                                \
+    }                                                                                                 \
+  } else {                                                                                            \
+    (__DA_ARR).items[(__DA_ARR).count++] = __DA_VAL;                                                  \
+  }                                                                                                   \
+  __DA_RESULT;                                                                                        \
+  DIAGNOSTIC_POP                                                                                      \
 })
 
-#define DA_Remove(_ARR, _IDX) ({                          \
-  DIAGNOSTIC_PUSH                                         \
-  DIAGNOSTIC_IGNORE_UNUSED                                \
-  int _RESULT = 1;                                        \
-  if (_IDX < 0 || _IDX >= _ARR.count) {                   \
-    _RESULT = 0;                                          \
-  } else {                                                \
-    for (int _I = _IDX; _I < _ARR.count - 1; _I++) {      \
-      _ARR.items[_I] = _ARR.items[_I + 1];                \
-    }                                                     \
-    _ARR.count--;                                         \
-  }                                                       \
-  _RESULT;                                                \
-  DIAGNOSTIC_POP                                          \
+#define DA_Remove(__DA_ARR, __DA_IDX) ({                                                     \
+  DIAGNOSTIC_PUSH                                                                            \
+  DIAGNOSTIC_IGNORE_UNUSED                                                                   \
+  int __DA_RESULT = 1;                                                                       \
+  if (((size_t)__DA_IDX) < 0 || __DA_IDX >= (__DA_ARR).count) {                              \
+    __DA_RESULT = 0;                                                                         \
+  } else {                                                                                   \
+    for (size_t __DA_I = ((size_t)__DA_IDX); __DA_I < (__DA_ARR).count - 1; __DA_I++) {      \
+      (__DA_ARR).items[__DA_I] = (__DA_ARR).items[__DA_I + 1];                               \
+    }                                                                                        \
+    (__DA_ARR).count--;                                                                      \
+  }                                                                                          \
+  __DA_RESULT;                                                                               \
+  DIAGNOSTIC_POP                                                                             \
 })
 
-#define DA_Insert(_ARR, _IDX, _VAL) ({                                        \
-  DIAGNOSTIC_PUSH                                                             \
-  DIAGNOSTIC_IGNORE_UNUSED                                                    \
-  int _RESULT = 1;                                                            \
-  if (_ARR.count >= _ARR.capacity) {                                          \
-    if (_ARR.capacity == 0) {                                                 \
-      _ARR.capacity = 128;                                                    \
-    } else {                                                                  \
-      _ARR.capacity *= 2;                                                     \
-    }                                                                         \
-    void* _OLDPTR = _ARR.items;                                               \
-    _ARR.items = realloc(_ARR.items, _ARR.capacity*sizeof(*_ARR.items));      \
-    if (!_ARR.items) {                                                        \
-      _RESULT = 0;                                                            \
-      _ARR.items = _OLDPTR;                                                   \
-    } else {                                                                  \
-      _ARR.count++;                                                           \
-      for (int _I = _ARR.count; _I > _IDX; _I--) {                            \
-        _ARR.items[_I] = _ARR.items[_I - 1];                                  \
-      }                                                                       \
-      _ARR.items[_IDX] = _VAL;                                                \
-    }                                                                         \
-  } else {                                                                    \
-    _ARR.count++;                                                             \
-    for (int _I = _ARR.count; _I > _IDX; _I--) {                              \
-      _ARR.items[_I] = _ARR.items[_I - 1];                                    \
-    }                                                                         \
-    _ARR.items[_IDX] = _VAL;                                                  \
-  }                                                                           \
-  _RESULT;                                                                    \
-  DIAGNOSTIC_POP                                                              \
+#define DA_Insert(__DA_ARR, __DA_IDX, __DA_VAL) ({                                                    \
+  DIAGNOSTIC_PUSH                                                                                     \
+  DIAGNOSTIC_IGNORE_UNUSED                                                                            \
+  int __DA_RESULT = 1;                                                                                \
+  if ((__DA_ARR).count >= (__DA_ARR).capacity) {                                                      \
+    if ((__DA_ARR).capacity == 0) {                                                                   \
+      (__DA_ARR).capacity = 128;                                                                      \
+    } else {                                                                                          \
+      (__DA_ARR).capacity *= 2;                                                                       \
+    }                                                                                                 \
+    void* __DA_OLDPTR = (__DA_ARR).items;                                                             \
+    (__DA_ARR).items = realloc((__DA_ARR).items, (__DA_ARR).capacity*sizeof(*(__DA_ARR).items));      \
+    if (!(__DA_ARR).items) {                                                                          \
+      __DA_RESULT = 0;                                                                                \
+      (__DA_ARR).items = __DA_OLDPTR;                                                                 \
+    } else {                                                                                          \
+      (__DA_ARR).count++;                                                                             \
+      for (size_t __DA_I = (__DA_ARR).count; __DA_I > ((size_t)__DA_IDX); __DA_I--) {                 \
+        (__DA_ARR).items[__DA_I] = (__DA_ARR).items[__DA_I - 1];                                      \
+      }                                                                                               \
+      (__DA_ARR).items[((size_t)__DA_IDX)] = __DA_VAL;                                                \
+    }                                                                                                 \
+  } else {                                                                                            \
+    (__DA_ARR).count++;                                                                               \
+    for (size_t __DA_I = (__DA_ARR).count; __DA_I > ((size_t)__DA_IDX); __DA_I--) {                   \
+      (__DA_ARR).items[__DA_I] = (__DA_ARR).items[__DA_I - 1];                                        \
+    }                                                                                                 \
+    (__DA_ARR).items[((size_t)__DA_IDX)] = __DA_VAL;                                                  \
+  }                                                                                                   \
+  __DA_RESULT;                                                                                        \
+  DIAGNOSTIC_POP                                                                                      \
+})
+
+#define DA_ResizeToFit(__DA_ARR) ({                                                              \
+  DIAGNOSTIC_PUSH                                                                                \
+  DIAGNOSTIC_IGNORE_UNUSED                                                                       \
+  int __DA_RESULT = 1;                                                                           \
+  void* __DA_OLDPTR = (__DA_ARR).items;                                                          \
+  (__DA_ARR).items = realloc((__DA_ARR).items, (__DA_ARR).count*sizeof(*(__DA_ARR).items));      \
+  if (!(__DA_ARR).items) {                                                                       \
+    __DA_RESULT = 0;                                                                             \
+    (__DA_ARR).items = __DA_OLDPTR;                                                              \
+  } else {                                                                                       \
+    (__DA_ARR).capacity = (__DA_ARR).count;                                                      \
+  }                                                                                              \
+  __DA_RESULT;                                                                                   \
+  DIAGNOSTIC_POP                                                                                 \
+})
+
+#define DA_Resize(__DA_ARR, __DA_SIZE) ({                                                 \
+  DIAGNOSTIC_PUSH                                                                         \
+  DIAGNOSTIC_IGNORE_UNUSED                                                                \
+  int __DA_RESULT = 1;                                                                    \
+  void* __DA_OLDPTR = (__DA_ARR).items;                                                   \
+  (__DA_ARR).items = realloc((__DA_ARR).items, __DA_SIZE*sizeof(*(__DA_ARR).items));      \
+  if (!(__DA_ARR).items) {                                                                \
+    __DA_RESULT = 0;                                                                      \
+    (__DA_ARR).items = __DA_OLDPTR;                                                       \
+  } else {                                                                                \
+    (__DA_ARR).capacity = __DA_SIZE;                                                      \
+    if (__DA_SIZE < (__DA_ARR).count) {                                                   \
+      (__DA_ARR).count = __DA_SIZE;                                                       \
+    }                                                                                     \
+  }                                                                                       \
+  __DA_RESULT;                                                                            \
+  DIAGNOSTIC_POP                                                                          \
+})
+
+#define DA_Clear(__DA_ARR) ({      \
+  DIAGNOSTIC_PUSH                  \
+  DIAGNOSTIC_IGNORE_UNUSED         \
+  int __DA_RESULT = 1;             \
+  (__DA_ARR).count = 0;            \
+  __DA_RESULT;                     \
+  DIAGNOSTIC_POP                   \
+})
+
+#define DA_Zero(__DA_ARR) ({                                          \
+  DIAGNOSTIC_PUSH                                                     \
+  DIAGNOSTIC_IGNORE_UNUSED                                            \
+  int __DA_RESULT = 1;                                                \
+  for (size_t __DA_I = 0; __DA_I < (__DA_ARR).count; __DA_I++) {      \
+    (__DA_ARR).items[__DA_I] = 0;                                     \
+  }                                                                   \
+  __DA_RESULT;                                                        \
+  DIAGNOSTIC_POP                                                      \
+})
+
+#define DA_Free(__DA_ARR) ({          \
+  DIAGNOSTIC_PUSH                     \
+  DIAGNOSTIC_IGNORE_UNUSED            \
+  int __DA_RESULT = 1;                \
+  if ((__DA_ARR).capacity > 0) {      \
+    free((__DA_ARR).items);           \
+    (__DA_ARR).count = 0;             \
+    (__DA_ARR).capacity = 0;          \
+  }                                   \
+  __DA_RESULT;                        \
+  DIAGNOSTIC_POP                      \
 })
 
 #endif
