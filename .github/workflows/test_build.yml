@@ -3,26 +3,12 @@ name: build and run tests
 on: [push]
 
 jobs:
-  checkout_repo:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: tests
         uses: actions/checkout@v4
-  build_builder:
-    runs-on: ubuntu-latest
-    needs: checkout_repo
-    steps:
-      - name: build nob
-        run: cc nob.c -o nob
-  build_tests:
-    runs-on: ubuntu-latest
-    needs: build_builder
-    steps:
-      - name: build tests
-        run: ./nob
-  run_tests:
-    runs-on: ubuntu-latest
-    needs: build_tests
-    steps:
-      - name: run tests
-        run: ./dist/release/main
+        run: |
+          cc nob.c -o nob
+          ./nob
+          ./dist/release/main
