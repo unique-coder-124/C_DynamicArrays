@@ -37,13 +37,14 @@
     if ((__DA_ARR).capacity == 0) {                                                                   \
       (__DA_ARR).capacity = 128;                                                                      \
     } else {                                                                                          \
-      (__DA_ARR).capacity *= 2;                                                                       \
+      (__DA_ARR).capacity <<= 1;                                                                      \
     }                                                                                                 \
     void* __DA_OLDPTR = (__DA_ARR).items;                                                             \
     (__DA_ARR).items = realloc((__DA_ARR).items, (__DA_ARR).capacity*sizeof(*(__DA_ARR).items));      \
     if (!(__DA_ARR).items) {                                                                          \
       __DA_RESULT = 0;                                                                                \
       (__DA_ARR).items = __DA_OLDPTR;                                                                 \
+      (__DA_ARR).capacity >>= 1;                                                                      \
     } else {                                                                                          \
       (__DA_ARR).items[(__DA_ARR).count++] = __DA_VAL;                                                \
     }                                                                                                 \
@@ -78,13 +79,14 @@
     if ((__DA_ARR).capacity == 0) {                                                                   \
       (__DA_ARR).capacity = 128;                                                                      \
     } else {                                                                                          \
-      (__DA_ARR).capacity *= 2;                                                                       \
+      (__DA_ARR).capacity <<= 1;                                                                      \
     }                                                                                                 \
     void* __DA_OLDPTR = (__DA_ARR).items;                                                             \
     (__DA_ARR).items = realloc((__DA_ARR).items, (__DA_ARR).capacity*sizeof(*(__DA_ARR).items));      \
     if (!(__DA_ARR).items) {                                                                          \
       __DA_RESULT = 0;                                                                                \
       (__DA_ARR).items = __DA_OLDPTR;                                                                 \
+      (__DA_ARR).capacity >>= 1;                                                                      \
     } else {                                                                                          \
       for (size_t __DA_I = (__DA_ARR).count; __DA_I > ((size_t)__DA_IDX); __DA_I--) {                 \
         (__DA_ARR).items[__DA_I] = (__DA_ARR).items[__DA_I - 1];                                      \
