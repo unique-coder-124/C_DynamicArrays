@@ -6,8 +6,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: tests
+      - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Build and run tests
         run: |
           cc nob.c -o nob
           ./nob
