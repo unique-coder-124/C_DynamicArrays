@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: build nob
-        run: cc nob.c -o nob
+        run: ls && cc nob.c -o nob
   build_tests:
     runs-on: ubuntu-latest
     needs: build_builder
